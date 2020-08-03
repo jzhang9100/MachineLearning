@@ -15,4 +15,8 @@ train_ds = tf.data.Dataset.from_tensor_slices((x_train, y_train)).shuffle(10000)
 print(train_ds.shape)
 test_ds = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(32)
 
+class MyModel(Model):
+    def __init__(self):
+        super(MyModel, self).__init__()
+        self.conv1 = Conv2D(32, 3, activation='relu')
 
