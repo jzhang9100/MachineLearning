@@ -3,7 +3,9 @@
 from model import char_model
 
 import tensorflow as tf
-import ipykernel
+
+from tensorflow.keras.layers import Dense, Flatten, Conv2D
+from tensorflow.keras import Model
 
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
 x_train, x_test = x_train / 255.0, x_test / 255.0
@@ -15,6 +17,7 @@ train = tf.data.Dataset.from_tensor_slices((x_train, y_train)).shuffle(10000).ba
 test = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(32)
 
 model = char_model()
+
 loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optimizer = tf.keras.optimizers.Adam()
 
@@ -44,7 +47,7 @@ def test_step(images, labels):
     test_accuracy(labels, predictions)
 
 
-EPOCHS = 5
+EPOCHS = 50
 
 for epoch in range(EPOCHS):
     print("\nepoch {}/{}".format(epoch+1,EPOCHS))
@@ -68,3 +71,4 @@ for epoch in range(EPOCHS):
                         train_accuracy.result() * 100,
                         test_loss.result(),
                         test_accuracy.result() * 100))
+print(model.summary())
