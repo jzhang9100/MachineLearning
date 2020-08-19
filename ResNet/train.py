@@ -1,6 +1,6 @@
 #!/bin/usr/python3
 #Jack Zhang
-from model import char_model
+from model import ResNet50
 
 import tensorflow as tf
 
@@ -86,7 +86,10 @@ for epoch in range(EPOCHS):
 print(model.summary())
 
 
+
 #------------------------------------------------------------------------------------------#
+#Vanilla without residual blocks
+vanilla = VanillaModel()
 
 loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optimizer = tf.keras.optimizers.Adam()
@@ -152,6 +155,24 @@ for epoch in range(EPOCHS):
 print(model.summary())
 
 
-
+#Save Training Results
 import matplotlib.pyplot as plt
+plt.plot(vanilla_loss)
+plt.plot(res_loss)
+plt.savefig('train_loss.png')
+plt.clf()
+
+plt.plot(vanilla_val_loss)
+plt.plot(res_val_loss)
+plt.savefig('test_loss.png')
+plt.clf()
+
+plt.plot(vanilla_train_acc)
+plt.plot(res_train_acc)
+plt.savefig('train_acc.png')
+plt.clf()
+
+plt.plot(vanilla_test_acc)
+plt.plot(res_test_acc)
+plt.savefig('test_acc.png')
 
