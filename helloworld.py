@@ -95,5 +95,7 @@ import matplotlib.pyplot as plt
 
 plt.plot(loss)
 plt.savefig('test_save_loss_plt.png')
+
+plt.clf()
 plt.plot(acc)
 plt.savefig('test_save_acc_plt.png')
