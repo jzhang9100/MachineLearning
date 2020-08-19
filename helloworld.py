@@ -65,8 +65,9 @@ def test_step(images, labels):
   test_loss(t_loss)
   test_accuracy(labels, predictions)
 
-EPOCHS = 5
+EPOCHS = 2
 
+loss = []
 for epoch in range(EPOCHS):
   # Reset the metrics at the start of the next epoch
   train_loss.reset_states()
@@ -86,5 +87,10 @@ for epoch in range(EPOCHS):
                         train_accuracy.result() * 100,
                         test_loss.result(),
                         test_accuracy.result() * 100))
+  loss.append(train_loss.result())
 
+print(loss)
+import matplotlib.pyplot as plt
 
+plt.plot(loss)
+plt.savefig('test_save_loss_plt.png')
