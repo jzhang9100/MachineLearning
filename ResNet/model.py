@@ -6,7 +6,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Activation, Dense, Flatten, Conv2D, MaxPooling2D, BatchNormalization, Add, Dropout
 from tensorflow.keras import Model
 
-class char_model(Model):
+class ResNet50(Model):
     def __init__(self):
         super(char_model, self).__init__()
         self.conv1 = Conv2D(32, 3, activation='relu', input_shape=(32,32,32,3))

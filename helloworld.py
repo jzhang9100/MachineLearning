@@ -67,6 +67,7 @@ def test_step(images, labels):
 
 EPOCHS = 2
 
+acc = []
 loss = []
 for epoch in range(EPOCHS):
   # Reset the metrics at the start of the next epoch
@@ -88,9 +89,11 @@ for epoch in range(EPOCHS):
                         test_loss.result(),
                         test_accuracy.result() * 100))
   loss.append(train_loss.result())
-
+  acc.append(train_accuracy.result())
 print(loss)
 import matplotlib.pyplot as plt
 
 plt.plot(loss)
 plt.savefig('test_save_loss_plt.png')
+plt.plot(acc)
+plt.savefig('test_save_acc_plt.png')

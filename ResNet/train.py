@@ -16,7 +16,77 @@ x_test = x_test.astype("float32")
 train = tf.data.Dataset.from_tensor_slices((x_train, y_train)).shuffle(10000).batch(32)
 test = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(32)
 
-model = char_model()
+#----------------------------------------------------------------------------------------#
+
+resnet = ResNet50()
+
+res_loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+res_optimizer = tf.keras.optimizers.Adam()
+
+res_train_loss = tf.keras.metrics.Mean(name='train_loss')
+res_train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
+
+res_test_loss = tf.keras.metrics.Mean(name='test_loss')
+res_test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
+
+@tf.function
+def res_train_step(images, labels):
+    with tf.GradientTape() as tape:
+        predictions = resnet(images, training=True)
+        l = res_loss(labels, predictions)
+    gradients = tape.gradient(l, resnet.trainable_variables)
+    res_optimizer.apply_gradients(zip(gradients, resnet.trainable_variables))
+
+    res_train_loss(l)
+    res_train_accuracy(labels, predictions)
+
+@tf.function
+def res_test_step(images, labels):
+    predictions = resnet(images, training=False)
+    t_l = res_loss(labels, predictions)
+
+    res_test_loss(t_l)
+    res_test_accuracy(labels, predictions)
+
+
+EPOCHS = 50
+
+#ResNet50 Train
+res_loss = []
+res_val_loss = []
+res_train_acc = []
+res_test_acc = []
+for epoch in range(EPOCHS):
+    print("\nepoch {}/{}".format(epoch+1,EPOCHS))
+    res_train_loss.reset_states()
+    res_train_accuracy.reset_states()
+    res_test_loss.reset_states()
+    res_test_accuracy.reset_states()
+
+    pbar = tf.keras.utils.Progbar(len(train))
+    for i, d in enumerate(train):
+        images, labels = d
+        res_train_step(images, labels)
+        pbar.update(i+1)
+
+    for test_images, test_labels in test:
+        res_test_step(test_images, test_labels)
+
+    template = 'Epoch {}, Loss: {}, Accuracy: {}, Test Loss: {}, Test Accuracy: {}'
+    print(template.format(epoch + 1,
+                        res_train_loss.result(),
+                        res_train_accuracy.result() * 100,
+                        res_test_loss.result(),
+                        res_test_accuracy.result() * 100))
+
+    res_loss.append(train_loss.result())
+    res_val_loss.append(res_test_loss.result())
+    res_train_acc.append(res_train_accuracy.result())
+    res_test_acc.append(res_test_accuracy.result())
+print(model.summary())
+
+
+#------------------------------------------------------------------------------------------#
 
 loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 optimizer = tf.keras.optimizers.Adam()
@@ -28,29 +98,32 @@ test_loss = tf.keras.metrics.Mean(name='test_loss')
 test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
 @tf.function
-def train_step(images, labels):
+def vanilla_train_step(images, labels):
     with tf.GradientTape() as tape:
         predictions = model(images, training=True)
         l = loss(labels, predictions)
-    gradients = tape.gradient(l, model.trainable_variables)
-    optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+    gradients = tape.gradient(l, vanilla.trainable_variables)
+    optimizer.apply_gradients(zip(gradients, vanilla.trainable_variables))
 
     train_loss(l)
     train_accuracy(labels, predictions)
 
-@tf.function
-def test_step(images, labels):
-    predictions = model(images, training=False)
+@tf.fucntion
+def vanilla_test_step(images, labels):
+    predictions = vanilla(images, training=False)
     t_l = loss(labels, predictions)
 
     test_loss(t_l)
     test_accuracy(labels, predictions)
 
 
-EPOCHS = 50
-
+#Vanilla Model
+vanilla_loss = []
+vanilla_val_loss = []
+vanilla_train_acc = []
+vanilla_test_acc = []
 for epoch in range(EPOCHS):
-    print("\nepoch {}/{}".format(epoch+1,EPOCHS))
+    print("\nepoch {}/{}".format(epoch+1, EPOCHS))
     train_loss.reset_states()
     train_accuracy.reset_states()
     test_loss.reset_states()
@@ -71,4 +144,14 @@ for epoch in range(EPOCHS):
                         train_accuracy.result() * 100,
                         test_loss.result(),
                         test_accuracy.result() * 100))
+
+    vanilla_loss.append(train_loss.result())
+    vanilla_val_loss.append(test_loss.result())
+    vanilla_train_acc.append(train_accuracy.result())
+    vanilla_test_acc.append(test_accuracy.result())
 print(model.summary())
+
+
+
+import matplotlib.pyplot as plt
+
