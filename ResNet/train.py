@@ -1,6 +1,7 @@
 #!/bin/usr/python3
 #Jack Zhang
 from model import ResNet50
+from model import VanillaModel
 
 import tensorflow as tf
 
@@ -20,36 +21,36 @@ test = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(32)
 
 resnet = ResNet50()
 
-res_loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+res_loss_func = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 res_optimizer = tf.keras.optimizers.Adam()
 
-res_train_loss = tf.keras.metrics.Mean(name='train_loss')
-res_train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
+res_train_loss = tf.keras.metrics.Mean(name='res_train_loss')
+res_train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='res_train_accuracy')
 
-res_test_loss = tf.keras.metrics.Mean(name='test_loss')
-res_test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
+res_test_loss = tf.keras.metrics.Mean(name='res_test_loss')
+res_test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='res_test_accuracy')
 
 @tf.function
 def res_train_step(images, labels):
     with tf.GradientTape() as tape:
         predictions = resnet(images, training=True)
-        l = res_loss(labels, predictions)
-    gradients = tape.gradient(l, resnet.trainable_variables)
+        r_l = res_loss_func(labels, predictions)
+    gradients = tape.gradient(r_l, resnet.trainable_variables)
     res_optimizer.apply_gradients(zip(gradients, resnet.trainable_variables))
 
-    res_train_loss(l)
+    res_train_loss(r_l)
     res_train_accuracy(labels, predictions)
 
 @tf.function
 def res_test_step(images, labels):
     predictions = resnet(images, training=False)
-    t_l = res_loss(labels, predictions)
+    r_t_l = res_loss_func(labels, predictions)
 
-    res_test_loss(t_l)
+    res_test_loss(r_t_l)
     res_test_accuracy(labels, predictions)
 
 
-EPOCHS = 50
+EPOCHS = 1
 
 #ResNet50 Train
 res_loss = []
@@ -79,11 +80,11 @@ for epoch in range(EPOCHS):
                         res_test_loss.result(),
                         res_test_accuracy.result() * 100))
 
-    res_loss.append(train_loss.result())
+    res_loss.append(res_train_loss.result())
     res_val_loss.append(res_test_loss.result())
     res_train_acc.append(res_train_accuracy.result())
     res_test_acc.append(res_test_accuracy.result())
-print(model.summary())
+print(resnet.summary())
 
 
 
@@ -91,33 +92,33 @@ print(model.summary())
 #Vanilla without residual blocks
 vanilla = VanillaModel()
 
-loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-optimizer = tf.keras.optimizers.Adam()
+vanilla_loss_func = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+vanilla_optimizer = tf.keras.optimizers.Adam()
 
-train_loss = tf.keras.metrics.Mean(name='train_loss')
-train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
+vanilla_train_loss = tf.keras.metrics.Mean(name='vanilla_train_loss')
+vanilla_train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='vanilla_train_accuracy')
 
-test_loss = tf.keras.metrics.Mean(name='test_loss')
-test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
+vanilla_test_loss = tf.keras.metrics.Mean(name='vanilla_test_loss')
+vanilla_test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='vanilla_test_accuracy')
 
 @tf.function
 def vanilla_train_step(images, labels):
     with tf.GradientTape() as tape:
-        predictions = model(images, training=True)
-        l = loss(labels, predictions)
-    gradients = tape.gradient(l, vanilla.trainable_variables)
-    optimizer.apply_gradients(zip(gradients, vanilla.trainable_variables))
+        predictions = vanilla(images, training=True)
+        v_l = vanilla_loss_func(labels, predictions)
+    gradients = tape.gradient(v_l, vanilla.trainable_variables)
+    vanilla_optimizer.apply_gradients(zip(gradients, vanilla.trainable_variables))
 
-    train_loss(l)
-    train_accuracy(labels, predictions)
+    vanilla_train_loss(v_l)
+    vanilla_train_accuracy(labels, predictions)
 
-@tf.fucntion
+@tf.function
 def vanilla_test_step(images, labels):
     predictions = vanilla(images, training=False)
-    t_l = loss(labels, predictions)
+    v_t_l = vanilla_loss_func(labels, predictions)
 
-    test_loss(t_l)
-    test_accuracy(labels, predictions)
+    vanilla_test_loss(v_t_l)
+    vanilla_test_accuracy(labels, predictions)
 
 
 #Vanilla Model
@@ -127,34 +128,34 @@ vanilla_train_acc = []
 vanilla_test_acc = []
 for epoch in range(EPOCHS):
     print("\nepoch {}/{}".format(epoch+1, EPOCHS))
-    train_loss.reset_states()
-    train_accuracy.reset_states()
-    test_loss.reset_states()
-    test_accuracy.reset_states()
+    vanilla_train_loss.reset_states()
+    vanilla_train_accuracy.reset_states()
+    vanilla_test_loss.reset_states()
+    vanilla_test_accuracy.reset_states()
 
     pbar = tf.keras.utils.Progbar(len(train))
     for i, d in enumerate(train):
         images, labels = d
-        train_step(images, labels)
+        vanilla_train_step(images, labels)
         pbar.update(i+1)
 
     for test_images, test_labels in test:
-        test_step(test_images, test_labels)
+        vanilla_test_step(test_images, test_labels)
 
     template = 'Epoch {}, Loss: {}, Accuracy: {}, Test Loss: {}, Test Accuracy: {}'
     print(template.format(epoch + 1,
-                        train_loss.result(),
-                        train_accuracy.result() * 100,
-                        test_loss.result(),
-                        test_accuracy.result() * 100))
+                        vanilla_train_loss.result(),
+                        vanilla_train_accuracy.result() * 100,
+                        vanilla_test_loss.result(),
+                        vanilla_test_accuracy.result() * 100))
 
-    vanilla_loss.append(train_loss.result())
-    vanilla_val_loss.append(test_loss.result())
-    vanilla_train_acc.append(train_accuracy.result())
-    vanilla_test_acc.append(test_accuracy.result())
-print(model.summary())
+    vanilla_loss.append(vanilla_train_loss.result())
+    vanilla_val_loss.append(vanilla_test_loss.result())
+    vanilla_train_acc.append(vanilla_train_accuracy.result())
+    vanilla_test_acc.append(vanilla_test_accuracy.result())
+print(vanilla.summary())
 
-
+'''
 #Save Training Results
 import matplotlib.pyplot as plt
 plt.plot(vanilla_loss)
@@ -175,4 +176,4 @@ plt.clf()
 plt.plot(vanilla_test_acc)
 plt.plot(res_test_acc)
 plt.savefig('test_acc.png')
-
+'''

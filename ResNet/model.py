@@ -6,8 +6,6 @@ import tensorflow as tf
 from tensorflow.keras.layers import Activation, Dense, Flatten, Conv2D, MaxPooling2D, BatchNormalization, Add, Dropout
 from tensorflow.keras import Model
 
-
-
 class VanillaModel(Model):
     def __init__(self):
         super(VanillaModel, self).__init__()
@@ -31,7 +29,7 @@ class VanillaModel(Model):
 
     def call(self, x):
         x = self.conv1(x)
-        x = bn1(x)
+        x = self.bn1(x)
         x = self.pool1(x)
 
         for block in self.nn:
@@ -65,7 +63,6 @@ class VanillaModel(Model):
         a3 = Activation('relu')
 
         return [c1, bn1, a1, c2, bn2, a2, c3, bn3, a3]
-
 
 class ResNet50(Model):
     def __init__(self):
