@@ -50,7 +50,7 @@ def res_test_step(images, labels):
     res_test_accuracy(labels, predictions)
 
 
-EPOCHS = 1
+EPOCHS = 50
 
 #ResNet50 Train
 res_loss = []
@@ -155,7 +155,7 @@ for epoch in range(EPOCHS):
     vanilla_test_acc.append(vanilla_test_accuracy.result())
 print(vanilla.summary())
 
-'''
+
 #Save Training Results
 import matplotlib.pyplot as plt
 plt.plot(vanilla_loss)
@@ -176,4 +176,4 @@ plt.clf()
 plt.plot(vanilla_test_acc)
 plt.plot(res_test_acc)
 plt.savefig('test_acc.png')
-'''
+
