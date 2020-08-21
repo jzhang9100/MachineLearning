@@ -129,8 +129,8 @@ class ResNet50(Model):
     def res_net_block(self, filters):
         #a
         c1 = Conv2D(filters, kernel_size=(1,1), padding='valid', activation=None)
-        bn1 = BatchNormalization()
         a1 = Activation('relu')
+        bn1 = BatchNormalization()
 
         #b
         c2 = Conv2D(filters, kernel_size=(3,3), padding='same', activation=None)
@@ -145,7 +145,7 @@ class ResNet50(Model):
         c4 = Conv2D(4*filters, kernel_size=(1,1), padding='valid',activation=None)
         bn4 = BatchNormalization()
 
-        return [c1, bn1, a1, c2, bn2, a2, c3, bn3, c4, bn4]
+        return [c1, a1, bn1, c2, a2, bn2, c3, bn3, c4, bn4]
 
     #Returns a non Residual block
     def non_res_block(self, filters):
@@ -163,4 +163,4 @@ class ResNet50(Model):
         c3 = Conv2D(4*filters, kernel_size=(1,1), padding='valid',activation=None)
         bn3 = BatchNormalization()
 
-        return [c1, bn1, a1, c2, bn2, a2, c3, bn3]
+        return [c1, a1, bn1, c2, a2, bn2, c3, bn3]
