@@ -8,14 +8,17 @@ d.graduation()
 m = len(x_train)
 print("Training Data Size: " + str(m))
 
-#establish weights - 0 and baises b
-w = np.ones(x_train.shape[0])
-b = np.zeros(x_train.shape[0])
 
+'''
+#Look at data
+for sample in x_train:
+    print(sample)
+'''
+b = np.zeros(1)
+w = np.ones(len(x_train[0]))
 
 def h(x,w,b):
-    #tanspose to get [9 x 400] * [400]i
-    return x+b
+    return np.dot(x, w) + b
 
-t = h(x_train,w, b)
-print(t.shape, t)
+for x in x_train:
+    print(h(x, w, b))
