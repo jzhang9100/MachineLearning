@@ -48,4 +48,4 @@ Formulation: Logistic Regression Problem
  - If Y== 0 (No), update our weights to increase Probability of No|X
 
 Implementation of LR on admissions data from Kaggle:
-[Loss of implementation](admissions_data_LR_loss.png)
+![Loss of implementation](admissions_data_LR_loss.png?raw=true)
