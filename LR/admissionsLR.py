@@ -1,5 +1,6 @@
 #!/bin/usr/python3
 from dataLoader import data_loader
+from LogisticRegression import LogisticRegression
 import numpy as np
 
 d = data_loader(0.8)
@@ -17,3 +18,11 @@ for i, feature in enumerate(xtrain_T):
 
 x_train = np.transpose(xtrain_T)
 
+lr = LogisticRegression(x_train, y_train, x_test, y_test, 200, 0.005)
+lr.call()
+loss, val_loss = lr.get_losses()
+
+import matplotlib.pyplot as plt
+plt.plot(loss, label='loss')
+plt.plot(val_loss, label='val_loss')
+plt.savefig('admissions_data_LR_loss.png')
