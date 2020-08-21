@@ -25,11 +25,12 @@ for i, feature in enumerate(xtest_T):
     xtest_T[i] = feature
 x_test = np.transpose(xtest_T)
 
-lr = LogisticRegression(x_train, y_train, x_test, y_test, 5000, 0.005)
+lr = LogisticRegression(x_train, y_train, x_test, y_test, 1000, 0.005)
 lr.call()
 loss, val_loss = lr.get_losses()
 
 import matplotlib.pyplot as plt
-plt.plot(loss, label='loss')
-plt.plot(val_loss, label='val_loss')
+plt.plot(loss, '--b', label='loss')
+plt.plot(val_loss, '--r', label='val_loss')
+leg = plt.legend()
 plt.savefig('admissions_data_LR_loss.png')
