@@ -1,6 +1,27 @@
-Sequence to Sequence Deep Learning - Sutskever, I., Vinyals, O., and Le, Q. (2014) 
+Linear Regression
 
-Consider this example, AutoReply for emails. 
+Idea:
+   Given a set of features: x1,...,xn try to predict y
+
+Hypothesis Function:
+   h0(x) = 0*x0 + x1*01 + ... + xn*0n where x0 = 1
+         = Transpose(0) * x - inner product
+
+Cost Function:
+   J(0,..0n) = 1/2m sum(h0(xi)-yi)^2 from i=1 to m
+
+Gradient Descent:
+   0j = 0j - a * d/d0j J(0) a is step size
+   d/d0j = 1/m sum(h0(xi)-y(i)) * xij from i=1 to m where xij is the jth
+feature of the ith training example
+
+Feature Scaling:
+   Get every feature into approximately -1 <-> 1 range
+   Mean normization: xi = (xi - mui)/ std(xi) dont scale x0 since we want
+to keep that at 1
+   
+Example
+AutoReply for emails. 
 -Input: Contents of an email
 -Output: Reply of Yes or No
 
@@ -25,3 +46,6 @@ Formulation: Logistic Regression Problem
  - Sample a random x in X and its corresponding y value
  - If Y == 1 (Yes), update our weights to increase Probability of Yes|X
  - If Y== 0 (No), update our weights to increase Probability of No|X
+
+Implementation of LR on admissions data from Kaggle:
+![Loss of implementation](admissions_data_LR_loss.png?raw=true)
