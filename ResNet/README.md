@@ -16,3 +16,19 @@ G(x) = F(x) + x where x acts like a residual. Much easier to minimize the residu
 This residual framework can be realized by "shortcut" connections - Fig2 in Paper
 
 ResNet 50 architecture that I implemented: http://ethereon.github.io/netscope/#/gist/db945b393d40bfa26006
+
+ResNet50 Model Results on cifar10 compared to a plain vanilla 50 layer model:
+
+
+Training Loss Comparison
+![Tranining Loss](train_loss.png?raw=true)
+
+Test Loss Comparison
+![Test Loss](test_loss.png?raw=true)
+
+Training Accuracy Comparison
+![Training Accuracy](train_acc.png?raw=true)
+
+
+Test Accuracy Comparison
+![Test Accuracy](test_acc.png?raw=true)

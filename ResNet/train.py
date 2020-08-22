@@ -50,7 +50,7 @@ def res_test_step(images, labels):
     res_test_accuracy(labels, predictions)
 
 
-EPOCHS = 1
+EPOCHS = 2
 
 #ResNet50 Train
 res_loss = []
@@ -160,24 +160,24 @@ print(vanilla.summary())
 import matplotlib.pyplot as plt
 plt.plot(vanilla_loss, '--r', label='vanilla_loss')
 plt.plot(res_loss, '--b', label='res_loss')
-leg2 = plt.legend()
+plt.legend()
 plt.savefig('train_loss.png')
 plt.clf()
 
 plt.plot(vanilla_val_loss, '--r', label='vanilla_test_loss')
 plt.plot(res_val_loss, '--b', label='res_test_loss')
 plt.savefig('test_loss.png')
-leg2 = plt.legend()
+plt.legend()
 plt.clf()
 
 plt.plot(vanilla_train_acc, '--r', label='vanilla_train_acc')
 plt.plot(res_train_acc, '--b', label='res_train_acc')
 plt.savefig('train_acc.png')
-leg3 = plt.legend()
+plt.legend()
 plt.clf()
 
 plt.plot(vanilla_test_acc, '--r', label='vanilla_test_acc')
 plt.plot(res_test_acc, '--b', label='res_test_acc')
-leg4 = plt.legend()
+plt.legend()
 plt.savefig('test_acc.png')
 
