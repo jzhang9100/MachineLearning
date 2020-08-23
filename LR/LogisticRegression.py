@@ -16,7 +16,11 @@ class LogisticRegression:
         self.test_loss = []
 
 
-    def call(self):
+    def call(self, norm=False):
+        if norm:
+            self.y_train = (self.y_train - np.mean(self.y_train)) / np.std(self.y_train)
+            self.y_test = (self.y_test - np.mean(self.y_test)) / np.std(self.y_test)
+
         for i in range(self.N):
             self.weights = self.SGD(self.a, self.weights, self.x_train, self.y_train, self.M)
 

@@ -49,3 +49,7 @@ Formulation: Logistic Regression Problem
 
 Implementation of LR on admissions data from Kaggle:
 ![Loss of implementation](admissions_data_LR_loss.png?raw=true)
+
+
+Implementation of LR on boston housing data from keras.datsets:
+![Loss of implementation](boston_housingLR_loss.png?raw=true)
