@@ -10,7 +10,7 @@ Incomes the Recurrent Neural Network:
 The RNN architecture uses previous outputs as additional inputs into the next task, so that context is provided
 at each stage of learning ==> This is the idea of 'Memory' in NNs.
 
-[RNN architecure](rnn.PNG?raw=true)
+![RNN architecure](rnn.PNG?raw=true)
 
 Training a RNN is very similar to a traditional NN. The difference between the two is the way backpropagation
 is done. The RNN captures 'Memory' by having shared parameters across all the time steps, such that when we do
