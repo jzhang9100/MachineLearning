@@ -1,1 +1,1 @@
-Implimentation of ID3 decision tree
+Implimentation of ID3 Decision Tree
