@@ -3,4 +3,4 @@ Reading Machine Learning Papers and implementing them. Also just implementing ot
 Things Implemented:
  - [Logistic Regression](LR)
  - [ResNet50](ResNet)
- - [DecisionTree](Decision Tree)
+ - [Decision Tree](DecisionTree)
